@@ -1,5 +1,10 @@
 [build]
-command = "mvn clean package -DskipTests"
+command = """
+wget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.zip &&
+unzip apache-maven-3.9.6-bin.zip &&
+export PATH=$PATH:$PWD/apache-maven-3.9.6/bin &&
+mvn clean package -DskipTests
+"""
 base = ""
 publish = "target"
 
