@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Extractor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+
+        .page-container {
+            max-width: 100vw;
+            background: white;
+            overflow: hidden;
+        }
+
+        .header-section {
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .header-section h1 {
+            margin: 0;
+            color: #2d3748;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .header-section p {
+            margin-top: 0.5rem;
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .search-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #718096;
+            font-size: 1.2rem;
+        }
+
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .search-dropdown-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-dropdown-item:hover {
+            background-color: #f1f5f9;
+        }
+
+        .search-dropdown-item .resume-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .search-dropdown-item .resume-meta {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .upload-container {
+            padding: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .resumes-container {
+            padding: 2rem;
+        }
+
+        .resumes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .resumes-title {
+            margin: 0;
+            color: #2d3748;
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .resume-count {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            background-color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .upload-area.dragover {
+            background-color: #e9ecef;
+        }
+
+        .upload-area p {
+            margin: 0.5rem 0;
+        }
+
+        .file-name {
+            color: #2d3748;
+            font-weight: 500;
+            margin-top: 1rem;
+            word-break: break-all;
+        }
+
+        .alert {
+            display: none;
+            margin: 1rem auto;
+            max-width: 800px;
+        }
+
+        .resume-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .resume-card:hover {
+            border-color: #4299e1;
+            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .resume-info {
+            flex-grow: 1;
+        }
+
+        .resume-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .resume-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #718096;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .resume-meta i {
+            font-size: 1rem;
+            color: #4299e1;
+        }
+
+        .resume-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-left: 1rem;
+        }
+
+        .resume-actions .btn {
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #4299e1;
+            border-color: #4299e1;
+        }
+
+        .btn-primary:hover {
+            background-color: #3182ce;
+            border-color: #3182ce;
+        }
+
+        .btn-danger {
+            background-color: #f56565;
+            border-color: #f56565;
+        }
+
+        .btn-danger:hover {
+            background-color: #e53e3e;
+            border-color: #e53e3e;
+        }
+
+        .upload-button {
+            margin-top: 1rem;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .loading-overlay .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .loading-overlay p {
+            font-size: 1.5rem;
+            color: #2d3748;
+            font-weight: 500;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="page-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <h1>Shortlistr</h1>
+        <p>Upload, analyze, and search through resumes with AI-powered insights</p>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section">
+        <div class="search-wrapper">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" 
+                   class="search-input" 
+                   id="searchInput"
+                   placeholder="Search resumes..."
+                   autocomplete="off">
+            <div class="search-dropdown" id="searchDropdown"></div>
+        </div>
+    </div>
+
+    <!-- Validation Error -->
+    <div id="alertBox" class="alert alert-danger" role="alert"></div>
+
+    <!-- Upload Section -->
+    <div class="upload-container">
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+            <div class="upload-area" id="uploadArea">
+                <i class="bi bi-cloud-upload upload-icon"></i>
+                <p class="mb-2">Drag & drop your resume here or click to browse</p>
+                <p class="text-muted small">Supported format: PDF</p>
+                <p class="file-name" id="fileName"></p>
+                <input type="file" name="file" id="fileInput" style="display: none;" accept=".pdf">
+            </div>
+            <button type="submit" class="btn btn-primary upload-button" id="uploadButton" disabled>Upload</button>
+        </form>
+    </div>
+
+    <!-- Uploaded Resumes Section -->
+    <div class="resumes-container">
+        <div class="resumes-header">
+            <h3 class="resumes-title">
+                Uploaded Resumes
+                <span class="resume-count" th:if="${!#lists.isEmpty(resumes)}">
+                    (<span th:text="${#lists.size(resumes)}"></span> found)
+                </span>
+            </h3>
+        </div>
+
+        <div class="resume-grid">
+            <div th:each="resume : ${resumes}" class="resume-card">
+                <div class="resume-info">
+                    <h3 class="resume-title" th:text="${resume.originalFileName}"></h3>
+                    <div class="resume-meta">
+                        <i class="bi bi-calendar"></i>
+                        <span th:text="${#temporals.format(resume.uploadedAt, 'MMM dd, yyyy')}"></span>
+                    </div>
+                </div>
+                <div class="resume-actions">
+                    <a th:href="@{/view/{id}(id=${resume.id})}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-eye"></i> View
+                    </a>
+                    <button class="btn btn-danger btn-sm" th:onclick="'deleteResume(' + ${resume.id} + ')'">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(resumes)}" class="text-center py-4 text-muted w-100">
+                No resumes found
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav th:if="${totalPages > 1}" class="mt-4">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/?page=${currentPage - 1}}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" 
+                    th:classappend="${currentPage == i ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/?page=${i}}" th:text="${i}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/?page=${currentPage + 1}}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <p>We're looking through the resume, we'll be right back!</p>
+</div>
+
+<script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadButton = document.getElementById('uploadButton');
+    const fileNameDisplay = document.getElementById('fileName');
+    const alertBox = document.getElementById('alertBox');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const searchInput = document.getElementById('searchInput');
+    const searchDropdown = document.getElementById('searchDropdown');
+
+    function showAlert(message) {
+        alertBox.style.display = 'block';
+        alertBox.textContent = message;
+        setTimeout(hideAlert, 5000);
+    }
+
+    function hideAlert() {
+        alertBox.style.display = 'none';
+    }
+
+    function showLoading() {
+        loadingOverlay.style.display = 'flex';
+    }
+
+    function hideLoading() {
+        loadingOverlay.style.display = 'none';
+    }
+
+    function handleFile(file) {
+        if (!file) return;
+        hideAlert();
+
+        if (!file.type.match('application/pdf')) {
+            showAlert('Only PDF files are allowed.');
+            fileInput.value = '';
+            fileNameDisplay.textContent = '';
+            uploadButton.disabled = true;
+            return;
+        }
+
+        fileNameDisplay.textContent = file.name;
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        uploadButton.disabled = false;
+    }
+
+    // Upload handling
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        handleFile(file);
+    });
+
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!fileInput.files.length) {
+            showAlert('Please select a file to upload.');
+            return;
+        }
+
+        showLoading();
+
+        try {
+            const formData = new FormData(uploadForm);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                const data = await response.json();
+                showAlert(data.error || 'Failed to upload resume.');
+                hideLoading();
+            }
+        } catch (error) {
+            showAlert('Error uploading resume: ' + error.message);
+            hideLoading();
+        }
+    });
+
+    // Search dropdown handling
+    let searchTimeout;
+    let isSearching = false;
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        const query = searchInput.value.trim();
+        if (query.length < 2) {
+            searchDropdown.style.display = 'none';
+            return;
+        }
+
+        searchTimeout = setTimeout(async () => {
+            if (isSearching) return;
+            isSearching = true;
+            searchDropdown.innerHTML = '<div class="search-dropdown-item">Searching...</div>';
+
+            try {
+                const response = await fetch(`/search?keyword=${encodeURIComponent(query)}&page=1&size=5`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                displaySearchResults(data.resumes || []);
+            } catch (error) {
+                showAlert('Error fetching search results: ' + error.message);
+                searchDropdown.style.display = 'none';
+            } finally {
+                isSearching = false;
+            }
+        }, 300);
+    });
+
+    searchInput.addEventListener('blur', () => {
+        setTimeout(() => {
+            searchDropdown.style.display = 'none';
+        }, 200);
+    });
+
+    searchInput.addEventListener('focus', () => {
+        if (searchInput.value.trim().length >= 2 && !isSearching) {
+            searchDropdown.style.display = 'block';
+        }
+    });
+
+    function displaySearchResults(resumes) {
+        searchDropdown.innerHTML = '';
+        if (!resumes || resumes.length === 0) {
+            searchDropdown.innerHTML = '<div class="search-dropdown-item">No results found</div>';
+            searchDropdown.style.display = 'block';
+            return;
+        }
+
+        resumes.forEach(resume => {
+            const item = document.createElement('div');
+            item.className = 'search-dropdown-item';
+            item.innerHTML = `
+                <div>
+                    <div class="resume-title">${resume.originalFileName}</div>
+                    <div class="resume-meta">
+                        <i class="bi bi-calendar"></i>
+                        ${new Date(resume.uploadedAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: '2-digit',
+                            year: 'numeric'
+                        })}
+                    </div>
+                </div>
+            `;
+            item.addEventListener('click', () => {
+                window.location.href = `/view/${resume.id}`;
+            });
+            searchDropdown.appendChild(item);
+        });
+        searchDropdown.style.display = 'block';
+    }
+
+    // Delete resume function
+    async function deleteResume(id) {
+        if (!confirm('Are you sure you want to delete this resume?')) return;
+
+        try {
+            const response = await fetch(`/resume/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                showAlert('Failed to delete resume.');
+            }
+        } catch (error) {
+            showAlert('Error deleting resume: ' + error.message);
+        }
+    }
+</script>
+</body>
+</html>

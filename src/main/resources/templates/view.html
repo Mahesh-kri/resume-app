@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Resume Details</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+            color: #1f2937;
+            margin: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 100vw;
+            padding: 1.5rem;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .meta-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-item i {
+            color: #3b82f6;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .btn-primary {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+
+        .btn-primary:hover {
+            background-color: #4338ca;
+            border-color: #4338ca;
+        }
+
+        /* Cards */
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: none;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-header i {
+            color: #4f46e5;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transform: translateY(6px);
+        }
+
+        .resume-content {
+            white-space: pre-wrap;
+            color: #1f2937;
+            font-size: 1rem;
+            line-height: 1.7;
+            word-break: break-word;
+        }
+
+        .resume-content strong {
+            font-weight: 600;
+        }
+
+        .alert {
+            margin-bottom: 1.5rem;
+            border-radius: 6px;
+        }
+
+        .empty-message {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem;
+        }
+
+        .modal-dialog {
+            max-width: 90%;
+            margin: 1.75rem auto;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-title i {
+            color: #4f46e5;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Assessment Result Styles */
+        #assessmentResult {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: space-between;
+        }
+
+        .match-score {
+            flex: 0 0 auto;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #e0f2fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e40af;
+            transition: background-color 0.3s;
+        }
+
+        .score-circle[data-score="high"] {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .score-circle[data-score="medium"] {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .score-circle[data-score="low"] {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            color: #6b7280;
+            font-weight: 500;
+            margin-top: 0.75rem;
+        }
+
+        .analysis-section {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .analysis-list {
+            margin-top: 0;
+        }
+
+        .analysis-list h6 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analysis-list h6 i {
+            color: #4f46e5;
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .analysis-list p {
+            font-size: 1rem;
+            color: #1f2937;
+            line-height: 1.8;
+            margin-bottom: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .modal-dialog {
+                max-width: 95%;
+            }
+            #assessmentResult {
+                flex-direction: column;
+                padding: 1.5rem;
+            }
+            .match-score {
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Bar with Actions -->
+        <div class="top-bar">
+            <div class="meta-info">
+                <div class="meta-item">
+                    <i class="bi bi-person-circle"></i>
+                    <span th:text="${resume.name}"></span>
+                </div>
+                <div class="meta-item">
+                    <i class="bi bi-envelope-fill"></i>
+                    <span th:text="${resume.email}"></span>
+                </div>                
+                <div class="meta-item">
+                    <i class="bi bi-calendar3"></i>
+                    <span th:text="${#temporals.format(resume.uploadedAt, 'MMM dd, yyyy')}"></span>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn btn-primary assess-btn" data-bs-toggle="modal" data-bs-target="#assessModal">
+                    <i class="bi bi-clipboard-check"></i> Assess for Role
+                </button>
+                <a href="/" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+
+        <!-- Extraction Status Alert -->
+        <div class="alert alert-warning" th:if="${resume?.summary == null or #strings.contains(resume?.summary, 'Could not generate') or #strings.contains(resume?.experience, 'Could not extract') or #strings.contains(resume?.education, 'Could not extract')}" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Notice:</strong> Failed to extract some resume data due to OCR or format issues. Please upload a clearer file or provide text manually.
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Summary Section -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <h3 class="section-title">Summary</h3>
+                </div>
+                <div class="card-body">
+                    <div class="resume-content" th:if="${resume?.summary != null and not #strings.contains(resume?.summary, 'Could not generate')}" 
+                         th:utext="${#strings.replace(#strings.replace(resume?.summary, '**', ''), '\n', '<br>')}"></div>
+                    <div class="alert alert-info empty-message" th:if="${resume?.summary == null or #strings.contains(resume?.summary, 'Could not generate')}">
+                        No summary available. Please upload a clearer resume or enter details manually.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Experience Section -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-briefcase"></i>
+                    <h3 class="section-title">Professional Experience</h3>
+                </div>
+                <div class="card-body">
+                    <div class="resume-content" th:if="${resume?.experience != null and not #strings.contains(resume?.experience, 'Could not extract')}" 
+                         th:utext="${#strings.replace(#strings.replace(resume?.experience, '**', ''), '\n', '<br>')}"></div>
+                    <div class="alert alert-info empty-message" th:if="${resume?.experience == null or #strings.contains(resume?.experience, 'Could not extract')}">
+                        No experience data available. Please provide role details manually.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education Section -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-mortarboard"></i>
+                    <h3 class="section-title">Education</h3>
+                </div>
+                <div class="card-body">
+                    <div class="resume-content" th:if="${resume?.education != null and not #strings.contains(resume?.education, 'Could not extract')}" 
+                         th:utext="${#strings.replace(#strings.replace(resume?.education, '**', '<strong>'), '\n', '<br>')}"></div>
+                    <div class="alert alert-info empty-message" th:if="${resume?.education == null or #strings.contains(resume?.education, 'Could not extract')}">
+                        No education data available. Please provide details manually.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assess for Role Modal -->
+        <div class="modal fade" id="assessModal" tabindex="-1" aria-labelledby="assessModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="assessModalLabel">
+                            <i class="bi bi-search-heart"></i> Evaluate for Position
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="assessForm">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label">Role Title</label>
+                                    <input type="text" class="form-control" id="roleTitle" required placeholder="e.g. Software Developer">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Job Description</label>
+                                    <textarea class="form-control" id="jobDescription" rows="5" required placeholder="Paste the job description here..."></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">
+                                <i class="bi bi-search"></i> Analyze Match
+                            </button>
+                        </form>
+                        <div id="assessmentResult" class="mt-4 d-none p-3 border rounded">
+                            <div class="match-score">
+                                <div class="score-circle" id="scoreValueContainer">
+                                    <span id="scoreValue">0</span>%
+                                </div>
+                                <div class="score-label mt-2">Match Score</div>
+                            </div>
+                            <div class="analysis-section">
+                                <h6 class="section-title">
+                                    <i class="bi bi-clipboard-data"></i> Analysis
+                                </h6>
+                                <div id="matchAnalysis" class="analysis-list"></div>
+                            </div>
+                            <div id="assessmentError" class="alert alert-danger d-none" role="alert">
+                                Failed to analyze match. Please check your input or try again later.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const assessForm = document.getElementById('assessForm');
+            if (!assessForm) return;
+
+            assessForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const roleTitle = document.getElementById('roleTitle').value.trim();
+                const jobDescription = document.getElementById('jobDescription').value.trim();
+                const assessmentResult = document.getElementById('assessmentResult');
+                const assessmentError = document.getElementById('assessmentError');
+
+                if (!roleTitle || !jobDescription) {
+                    assessmentError.textContent = 'Please fill in both Role Title and Job Description.';
+                    assessmentError.classList.remove('d-none');
+                    return;
+                }
+
+                assessmentResult.classList.add('d-none');
+                assessmentError.classList.add('d-none');
+
+                try {
+                    const response = await fetch('/api/assess-role', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            resumeId: window.location.pathname.split('/').pop(),
+                            roleTitle,
+                            jobDescription
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    showAssessmentResult(result.match);
+                } catch (error) {
+                    assessmentError.textContent = `Error: ${error.message}. Please try again or contact support.`;
+                    assessmentError.classList.remove('d-none');
+                }
+            });
+        });
+
+        function showAssessmentResult(matchText) {
+            const resultDiv = document.getElementById('assessmentResult');
+            const assessmentError = document.getElementById('assessmentError');
+            if (!resultDiv) return;
+
+            resultDiv.classList.remove('d-none');
+            assessmentError.classList.add('d-none');
+
+            matchText = matchText
+                .replace(/\r\n/g, '\n')
+                .replace(/\n{2,}/g, '\n')
+                .replace(/\*\*/g, '')
+                .trim();
+
+            const scoreMatch = matchText.match(/Match Score:\s*(\d+)/);
+            const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
+            const scoreElement = document.getElementById('scoreValue');
+            const scoreCircle = document.getElementById('scoreValueContainer');
+            if (scoreElement && scoreCircle) {
+                scoreElement.textContent = score;
+                scoreCircle.dataset.score = score >= 75 ? 'high' : score >= 50 ? 'medium' : 'low';
+            }
+
+            const analysisMatch = matchText.match(/Match Analysis\s*\(neutral text\):(.*?)(?=\n\w+|\n*$)/s);
+            const analysisElement = document.getElementById('matchAnalysis');
+            if (analysisElement) {
+                analysisElement.innerHTML = analysisMatch 
+                    ? analysisMatch[1].trim().split('\n').filter(line => line.trim()).map(line => `<p>${line.trim()}</p>`).join('')
+                    : '<p>No analysis available</p>';
+            }
+        }
+    </script>
+</body>
+</html>

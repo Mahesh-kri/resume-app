@@ -1,0 +1,12 @@
+[build]
+command = "mvn clean package -DskipTests"
+base = ""
+publish = "target"
+
+[build.environment]
+JAVA_HOME = "/opt/buildhome/.jdk"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
