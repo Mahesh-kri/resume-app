@@ -1,5 +1,5 @@
 [build]
-command = "./mvnw clean package -DskipTests"
+command = "chmod +x mvnw && ./mvnw clean package -DskipTests"
 base = ""
 publish = "target"
 
