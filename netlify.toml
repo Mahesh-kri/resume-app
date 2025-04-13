@@ -1,15 +1,16 @@
 [build]
-command = """
-wget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.zip &&
-unzip apache-maven-3.9.6-bin.zip &&
-export PATH=$PATH:$PWD/apache-maven-3.9.6/bin &&
-mvn clean package -DskipTests
-"""
 base = ""
 publish = "target"
 
 [build.environment]
 JAVA_HOME = "/opt/buildhome/.jdk"
+
+[[plugins]]
+package = "@netlify/plugin-nextjs"
+  [plugins.inputs]
+    commands = [
+      './mvnw clean package -DskipTests'
+    ]
 
 [[redirects]]
 from = "/*"
