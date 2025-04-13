@@ -5,6 +5,7 @@ publish = "target"
 
 [build.environment]
 JAVA_HOME = "/opt/buildhome/.jdk"
+JAVA_OPTS = "-Xmx512m -Xms256m"
 
 [[redirects]]
 from = "/*"
