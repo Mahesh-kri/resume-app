@@ -1,16 +1,10 @@
 [build]
+command = "./mvnw clean package -DskipTests"
 base = ""
 publish = "target"
 
 [build.environment]
 JAVA_HOME = "/opt/buildhome/.jdk"
-
-[[plugins]]
-package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    commands = [
-      './mvnw clean package -DskipTests'
-    ]
 
 [[redirects]]
 from = "/*"
