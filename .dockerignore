@@ -1,0 +1,30 @@
+# Ignore IDE and editor files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+.DS_Store
+
+# Ignore build artifacts
+target/
+out/
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore H2 database files
+data/*.mv.db
+data/*.trace.db
+
+
+# Ignore Docker artifacts (if not managed separately)
+Dockerfile.lock
+docker-compose.override.yml
+
+# Ignore temporary files
+*~
+.#*

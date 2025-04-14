@@ -13,6 +13,11 @@ target/
 .springBeans
 .sts4-cache
 
+# Ignore H2 database files
+data/*.mv.db
+data/*.trace.db
+data/*.db.data
+
 ### IntelliJ IDEA ###
 .idea
 *.iws

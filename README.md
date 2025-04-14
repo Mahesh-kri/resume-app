@@ -57,6 +57,44 @@ netlify deploy --prod
      - `OPENAI_API_KEY`: Your OpenAI API key
      - `JAVA_HOME`: Set to "/opt/buildhome/.jdk"
 
+## Docker Deployment
+
+### Prerequisites
+
+- Docker and Docker Compose installed
+- OpenAI API key
+
+### Build and Run
+
+```bash
+# Build the Docker image
+docker build -t resume-extractor .
+
+# Run the container
+docker run -d \
+  --name resume-extractor \
+  -p 8080:8080 \
+  -e OPENAI_API_KEY="your-api-key-here" \
+  resume-extractor
+```
+
+### Using Docker Compose
+
+1. Create a `.env` file with your environment variables:
+```bash
+echo "OPENAI_API_KEY=your-api-key-here" > .env
+```
+
+2. Run with Docker Compose:
+```bash
+docker-compose up -d
+```
+
+### Access the Application
+
+Once running, access the application at:
+- http://localhost:8080
+
 ## Technical Stack
 
 - Backend:
