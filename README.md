@@ -2,138 +2,107 @@
 
 A Spring Boot application that extracts and summarizes information from PDF resumes, making it easier for recruiters to analyze candidate profiles.
 
-## Features
+---
 
-- Upload PDF resumes through a modern drag-and-drop interface
-- Extract key information including:
+## ✨ Features
+
+- ✅ Upload PDF resumes through a modern drag-and-drop interface
+- ✅ Automatically extract key information including:
   - Skills
   - Experience
   - Education
   - Summary
-- Search through uploaded resumes
-- View detailed resume information
-- H2 database for data persistence
-- Responsive UI using Bootstrap
+- ✅ Search and filter resumes
+- ✅ View detailed parsed resume data
+- ✅ H2 database for development/testing
+- ✅ Clean UI built with Bootstrap
 
-## Prerequisites
+---
 
-- Java 17 or higher
-- Maven 3.6 or higher
+## 🧰 Prerequisites
 
-## Setup and Running
+- **Java** 17 or higher  
+- **Maven** 3.6 or higher  
+- **Docker** and **Docker Compose** (optional, for containerized deployment)
 
-1. Clone the repository
-2. Navigate to the project directory
-3. Run the application:
+---
+
+## ▶️ Running the Application
+
+### 🖥️ Option 1: Run Locally (Without Docker)
+
+1. **Clone the Repository**  
+   ```bash
+   git clone https://github.com/your-username/resume-extractor.git
+   cd resume-extractor
+   ```
+
+2. **Build the project**  
+   ```bash
+   mvn clean install
+   ```
+
+3. **Run the Spring Boot App**  
    ```bash
    mvn spring-boot:run
    ```
-4. Access the application at `http://localhost:8080`
-5. Access H2 Console at `http://localhost:8080/h2-console` (if needed)
-   - JDBC URL: `jdbc:h2:file:./data/resumedb`
-   - Username: sa
-   - Password: password
 
-## Deployment to Netlify
+4. **Access the app**  
+   Open your browser and go to: [http://localhost:8080](http://localhost:8080)
 
-1. Ensure you have a Netlify account and are logged in to the Netlify CLI
+---
 
-2. Initialize your Git repository if not already done:
-```bash
-git init
-git add .
-git commit -m "Initial commit"
+### 🚣 Option 2: Run with Docker
+
+> This method uses Docker Compose to run the app in an isolated container.
+
+#### 1. **Create a `.env` file**
+
+Create a `.env` file in the project root:
+
+```env
+PORT=8080
+DB_URL=jdbc:h2:mem:resume-db
+DB_USERNAME=sa
+DB_PASSWORD=
+OPENAI_API_KEY=your-api-key-here
 ```
 
-3. Deploy to Netlify:
-```bash
-netlify deploy --prod
-```
+> 📝 Replace `your-api-key-here` with your actual OpenAI API key.
 
-4. Set environment variables in Netlify:
-   - Go to your site's dashboard on Netlify
-   - Navigate to Site settings > Build & deploy > Environment variables
-   - Add these variables:
-     - `OPENAI_API_KEY`: Your OpenAI API key
-     - `JAVA_HOME`: Set to "/opt/buildhome/.jdk"
-
-## Docker Deployment
-
-### Prerequisites
-
-- Docker and Docker Compose installed
-- OpenAI API key
-
-### Build and Run
+#### 2. **Build and Start the Container**
 
 ```bash
-# Build the Docker image
-docker build -t resume-extractor .
-
-# Run the container
-docker run -d \
-  --name resume-extractor \
-  -p 8080:8080 \
-  -e OPENAI_API_KEY="your-api-key-here" \
-  resume-extractor
+docker compose up --build
 ```
 
-### Using Docker Compose
+#### 3. **Access the App**
 
-1. Create a `.env` file with your environment variables:
-```bash
-echo "OPENAI_API_KEY=your-api-key-here" > .env
-```
+Once the container is up, open your browser:
 
-2. Run with Docker Compose:
-```bash
-docker-compose up -d
-```
+[http://localhost:8080](http://localhost:8080)
 
-### Access the Application
+---
 
-Once running, access the application at:
-- http://localhost:8080
-
-## Technical Stack
-
-- Backend:
-  - Spring Boot 3.4.4
-  - Spring Data JPA
-  - Apache PDFBox 3.0.1
-  - H2 Database
-- Frontend:
-  - Thymeleaf
-  - Bootstrap 5.3
-  - HTML5/CSS3/JavaScript
-
-## Project Structure
+## 📃 Project Structure
 
 ```
-src/main/java/com/springboot/resume/extractor/
-├── controller/
-│   └── ResumeController.java
-├── model/
-│   └── Resume.java
-├── repository/
-│   └── ResumeRepository.java
-├── service/
-│   └── ResumeService.java
-└── Application.java
+resume-extractor/
+├── src/
+├── Dockerfile
+├── docker-compose.yml
+├── .env
+├── pom.xml
+└── README.md
 ```
 
-## Usage
+---
 
-1. Open the application in your web browser
-2. Use the drag-and-drop interface or click to select a PDF resume
-3. Click "Upload Resume" to process the file
-4. View the extracted information on the details page
-5. Use the search functionality to find specific resumes
+## 🚜 Future Improvements
 
-## Future Enhancements
+- Integration with cloud storage (S3, GCS)
+- Support for DOCX format
+- Admin dashboard for user management
+- Scoring and ranking of resumes
 
-- AI/ML integration for better information extraction
-- Support for more document formats
-- Advanced search filters
-- Batch upload functionality
-- Export functionality
+---
